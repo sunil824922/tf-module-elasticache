@@ -24,6 +24,7 @@ resource "aws_security_group" "main" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
   }
 
   tags = merge(var.tags, {Name = "${var.name}-${var.env}-sg" })
@@ -42,17 +43,15 @@ resource "aws_elasticache_replication_group" "main" {
   description                = "${var.name}-${var.env}-elasticache"
   node_type                  = var.node_type
   port                       = 6379
-  parameter_group_name       = aws_elasticache_cluster_parameter_group.main.name
+  parameter_group_name       = aws_elasticache_parameter_group.main.name
   automatic_failover_enabled = true
-
-  num_node_groups         = var.num_node_groups
-  replicas_per_node_group = var.replicas_per_node_group
-  subnet_group_name       = aws_elasticache_subnet_group.main.name
-  security_group_ids      = [aws_security_group.main.id]
-  engine                  = "redis"
-  engine_version          = var.engine_version
+  num_node_groups            = var.num_node_groups
+  replicas_per_node_group    = var.replicas_per_node_group
+  subnet_group_name          = aws_elasticache_subnet_group.main.name
+  security_group_ids         = [aws_security_group.main.id]
+  engine                     = "redis"
+  engine_version             = var.engine_version
   at_rest_encryption_enabled = true
-  kms_key_id              = var.kms_arn
-  tags        = merge(var.tags, {Name = "${var.name}-${var.env}-elasticache" })
-
+  kms_key_id                 = var.kms_arn
+  tags                       = merge(var.tags, { Name = "${var.name}-${var.env}-elasticache" })
 }
