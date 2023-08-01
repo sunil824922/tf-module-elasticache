@@ -30,12 +30,11 @@ resource "aws_security_group" "main" {
   tags = merge(var.tags, {Name = "${var.name}-${var.env}-sg" })
 }
 
-resource "aws_elasticache_cluster_parameter_group" "main" {
+resource "aws_elasticache_parameter_group" "main" {
   family      = "redis6.x"
   name        = "${var.name}-${var.env}-pg"
   description = "${var.name}-${var.env}-pg"
   tags        = merge(var.tags, { Name = "${var.name}-${var.env}-pg" })
-
 }
 
 resource "aws_elasticache_replication_group" "main" {
